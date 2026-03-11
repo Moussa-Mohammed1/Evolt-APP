@@ -22,7 +22,11 @@ class StoreStationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'              => 'required|string|max:255',
+            'zone_geographique' => 'required|string|max:255',
+            'status'            => 'sometimes|in:available,unavailable',
+            'connector_type'    => 'required|string|max:255',
+            'puissance_kw'      => 'required|numeric|min:0',
         ];
     }
 }
