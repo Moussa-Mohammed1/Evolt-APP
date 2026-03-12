@@ -33,7 +33,9 @@ class StationController extends Controller
      */
     public function show(Station $station)
     {
-        //
+        $station->loadCount('reservations');
+
+        return response()->json($station);
     }
 
     /**
