@@ -22,7 +22,11 @@ class UpdateStationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'              => 'sometimes|required|string|max:255',
+            'zone_geographique' => 'sometimes|required|string|max:255',
+            'status'            => 'sometimes|required|in:available,unavailable',
+            'connector_type'    => 'sometimes|required|string|max:255',
+            'puissance_kw'      => 'sometimes|required|numeric|min:0',
         ];
     }
 }
