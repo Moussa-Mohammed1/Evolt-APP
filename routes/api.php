@@ -12,6 +12,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/stations', [StationController::class, 'index']);
  
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/charging-sessions/history', [ChargingSessionController::class, 'history']);
     Route::middleware('can:manage-stations')->group(function () {
         Route::post('/stations', [StationController::class, 'store']);

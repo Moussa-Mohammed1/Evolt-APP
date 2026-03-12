@@ -1,0 +1,10 @@
+$kind: http-request
+name: logout
+url: http://127.0.0.1:8000/api/logout
+method: POST
+headers:
+  - key: Authorization
+    value: bearer 16|4GkRMkoDK3eff6BmK8DP6wyRl5K5w0xdLnrBGuqi092e67ea
+  - key: Accept
+    value: application/json
+order: 2632247882548861
