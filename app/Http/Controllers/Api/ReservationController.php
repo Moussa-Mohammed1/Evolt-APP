@@ -83,6 +83,7 @@ class ReservationController extends Controller
         }
 
         $validated = $request->validated();
+        $newStatus = $validated['status'] ?? 'pending';
         $newStart = $validated['start_time'] ?? $reservation->start_time->toDateTimeString();
         $newEnd = $validated['end_time'] ?? $reservation->end_time->toDateTimeString();
 
@@ -116,6 +117,7 @@ class ReservationController extends Controller
         $reservation->update([
             'start_time' => $newStart,
             'end_time' => $newEnd,
+            'status' => $newStatus 
         ]);
 
         return response()->json([
