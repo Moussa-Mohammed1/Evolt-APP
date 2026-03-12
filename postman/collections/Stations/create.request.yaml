@@ -1,0 +1,11 @@
+$kind: http-request
+name: create
+url: http://127.0.0.1:8000/api/stations
+method: POST
+headers:
+  Accept: application/json
+  Authorization: bearer 15|pKPTbGRox416PFG89RabjdRI6Lo3Nf5JKwDsWQd3967e7b84
+body:
+  type: json
+  content: "{\r\n    \r\n}"
+order: 926918743718355

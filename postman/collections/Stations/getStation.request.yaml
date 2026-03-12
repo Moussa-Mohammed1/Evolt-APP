@@ -1,5 +1,8 @@
 $kind: http-request
 name: getStation
-url: ""
+url: http://127.0.0.1:8000/api/stations/3
 method: GET
+headers:
+  Accept: application/json
+  Authorization: bearer 14|NXV4MzTfK2X9wcwpmuhB0Zj8Bx3s7uHOkh7mLTFe5d02074b
 order: 885040420411419
