@@ -22,6 +22,7 @@ class UpdateReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'status' => 'string',
             'start_time' => ['nullable', 'date', 'after:now', 'required_without:end_time'],
             'end_time' => ['nullable', 'date', 'required_without:start_time'],
         ];
