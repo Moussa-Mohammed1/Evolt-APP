@@ -43,7 +43,7 @@ class AuthController extends Controller
         if (!Hash::check($request->password , $user->password)) {
             return response()->json([
                 'message' => 'password correct'
-            ], 401);
+            ], 422);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
