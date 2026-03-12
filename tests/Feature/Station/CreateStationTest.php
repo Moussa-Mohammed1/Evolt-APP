@@ -10,6 +10,7 @@ use Tests\TestCase;
 class CreateStationTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic feature test example.
      */
@@ -54,5 +55,26 @@ class CreateStationTest extends TestCase
                 'puissance_kw' => 23.44,
             ]);
         $response->assertStatus(403);
+    }
+
+    public function test_admin_cannot_create_station_with_missing_fields()
+    {
+        $admin = \App\Models\User::create([
+            'name' => 'moussa',
+            'email' => 'moussa@gmail.com',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/stations', []);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'name',
+                'zone_geographique',
+                'connector_type',
+                'puissance_kw',
+            ]);
     }
 }
