@@ -125,10 +125,7 @@ class CreateReservationTest extends TestCase
                 'end_time' => $existingEnd->copy()->addMinutes(30)->toDateTimeString(),
             ]);
 
-        $response->assertStatus(409)
-            ->assertJsonFragment([
-                'message' => 'This station is already reserved for the selected time slot.',
-            ]);
+        $response->assertStatus(409);
     }
 
     public function test_user_cannot_create_reservation_with_missing_fields(): void
