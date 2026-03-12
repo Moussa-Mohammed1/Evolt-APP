@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,12 +28,18 @@ class Reservation extends Model
         ];
     }
 
-    public function station()
+    public function station(): BelongsTo
     {
         return $this->belongsTo(Station::class, 'station_id');
     }
-    public function user()
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function chargingSessions(): HasMany
+    {
+        return $this->hasMany(ChargingSession::class);
     }
 }
