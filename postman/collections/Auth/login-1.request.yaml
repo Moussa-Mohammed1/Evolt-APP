@@ -1,5 +1,14 @@
 $kind: http-request
 name: login
+description: >-
+  Permet à un utilisateur existant de se connecter à l’API en fournissant son
+  email et son mot de passe.  
+    
+  Si les informations sont valides, l’API génère un **token d’authentification
+  Laravel Sanctum**.  
+    
+  Ce token doit être utilisé dans le header `Authorization` pour accéder aux
+  routes protégées de l’API.
 url: http://127.0.0.1:8000/api/login
 method: POST
 body:

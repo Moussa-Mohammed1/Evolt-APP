@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
+use App\Jobs\ReleaseStationAfterReservation;
 use App\Models\Reservation;
 use App\Models\Station;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +42,7 @@ class ReservationController extends Controller
         }
 
         $hasConflict = $station->reservations()
-            ->where('status', '!=', 'cancelled')
+            ->whereNotIn('status', ['cancelled', 'expired'])
             ->where('start_time', '<', $validated['end_time'])
             ->where('end_time', '>', $validated['start_time'])
             ->exists();
@@ -58,6 +59,9 @@ class ReservationController extends Controller
             'end_time' => $validated['end_time'],
             'status' => 'pending',
         ]);
+
+        ReleaseStationAfterReservation::dispatch($reservation->id)
+            ->delay($reservation->end_time);
 
         return response()->json([
             'message' => 'Reservation created successfully.',
@@ -83,7 +87,7 @@ class ReservationController extends Controller
         }
 
         $validated = $request->validated();
-        $newStatus = $validated['status'] ?? 'pending';
+        $newStatus = $validated['status'] ?? $reservation->status;
         $newStart = $validated['start_time'] ?? $reservation->start_time->toDateTimeString();
         $newEnd = $validated['end_time'] ?? $reservation->end_time->toDateTimeString();
 
@@ -95,7 +99,7 @@ class ReservationController extends Controller
 
         $station = Station::query()->findOrFail($reservation->station_id);
 
-        if ($station->status !== 'available') {
+        if ($station->status !== 'available' && $reservation->status !== 'accepted') {
             return response()->json([
                 'message' => 'This station is not available for reservation.',
             ], 409);
@@ -103,7 +107,7 @@ class ReservationController extends Controller
 
         $hasConflict = $station->reservations()
             ->whereKeyNot($reservation->id)
-            ->where('status', '!=', 'cancelled')
+            ->whereNotIn('status', ['cancelled', 'expired'])
             ->where('start_time', '<', $newEnd)
             ->where('end_time', '>', $newStart)
             ->exists();
@@ -117,12 +121,21 @@ class ReservationController extends Controller
         $reservation->update([
             'start_time' => $newStart,
             'end_time' => $newEnd,
-            'status' => $newStatus 
+            'status' => $newStatus,
         ]);
+
+        $this->syncStationAvailability($station);
+
+        $reservation = $reservation->fresh();
+
+        if (!in_array($reservation->status, ['cancelled', 'expired'], true)) {
+            ReleaseStationAfterReservation::dispatch($reservation->id)
+                ->delay($reservation->end_time);
+        }
 
         return response()->json([
             'message' => 'Reservation updated successfully.',
-            'reservation' => $reservation->fresh()->load(['station', 'user']),
+            'reservation' => $reservation->load(['station', 'user']),
         ]);
     }
 
@@ -147,9 +160,24 @@ class ReservationController extends Controller
             'status' => 'cancelled',
         ]);
 
+        $station = Station::query()->findOrFail($reservation->station_id);
+        $this->syncStationAvailability($station);
+
         return response()->json([
             'message' => 'Reservation cancelled successfully.',
             'reservation' => $reservation->fresh()->load(['station', 'user']),
+        ]);
+    }
+
+    private function syncStationAvailability(Station $station): void
+    {
+        $hasActiveAcceptedReservation = $station->reservations()
+            ->where('status', 'accepted')
+            ->where('end_time', '>', now())
+            ->exists();
+
+        $station->update([
+            'status' => $hasActiveAcceptedReservation ? 'unavailable' : 'available',
         ]);
     }
 }

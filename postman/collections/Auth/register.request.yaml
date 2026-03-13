@@ -1,7 +1,27 @@
 $kind: http-request
+name: register
+description: >-
+  Permet à un nouvel utilisateur de créer un compte dans le système.  
+    
+  Cet **endpoint** enregistre les informations de l’utilisateur, vérifie la
+  validité des données (email unique, mot de passe confirmé), puis génère un
+  **token d’authentification** via Laravel **Sanctum**.  
+    
+  Le token retourné pourra ensuite être utilisé pour accéder aux routes
+  protégées de l’API.
 url: http://127.0.0.1:8000/api/register
 method: POST
 body:
   type: json
-  content: ""
+  content: "{\r
+
+    \    \"name\" : \"Aaric\",\r
+
+    \    \"email\" : \"alaric@example.com\",\r
+
+    \    \"password\" : \"password123\",\r
+
+    \    \"password_confirmation\" : \"password123\"\r
+
+    }"
 order: 1000

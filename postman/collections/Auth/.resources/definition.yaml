@@ -1,1 +1,28 @@
 $kind: collection
+name: Auth
+description: >-
+  ## Auth API collection
+
+
+  Requests related to authentication for the Evolt API (local dev base URL:
+  `http://127.0.0.1:8000`).
+
+
+  ### What’s inside
+
+
+  - **Logout**: ends the current session/token (`POST /api/logout`).
+      
+  - **login:** log the registered user in the plateform ( `POST /api/login`).
+      
+  - **register**: register the user into the plateform ( `POST /api/register`).
+      
+
+  ### Notes
+
+
+  - Most requests in this collection are expected to use an `Authorization:
+  Bearer` header.
+      
+  - Prefer using an environment variable for the access token (for example,
+  `{{access_token}}`) instead of hard-coding tokens.
