@@ -1,5 +1,12 @@
 $kind: http-request
 name: getAll
+description: |-
+  Retrieves the charging sessions history.
+
+  - Method: GET
+  - Endpoint: /api/charging-sessions/history
+  - Accept: application/json
+  - Auth: Bearer token via the Authorization header
 url: http://127.0.0.1:8000/api/charging-sessions/history
 method: GET
 headers:

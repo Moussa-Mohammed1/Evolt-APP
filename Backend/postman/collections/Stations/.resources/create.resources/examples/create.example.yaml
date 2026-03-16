@@ -1,0 +1,38 @@
+$kind: http-example
+request:
+  url: http://127.0.0.1:8000/api/stations
+  method: POST
+  headers:
+    Accept: application/json
+    Authorization: bearer 15|pKPTbGRox416PFG89RabjdRI6Lo3Nf5JKwDsWQd3967e7b84
+  body:
+    type: json
+    content: "{\r
+
+      \    \"name\": \"station safi\",\r
+
+      \  \"zone_geographique\": \"safi\",\r
+
+      \  \"status\": \"available\",\r
+
+      \  \"connector_type\": \"C2C\",\r
+
+      \  \"puissance_kw\": \"13.00\"\r
+
+      }"
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    host: 127.0.0.1:8000
+    connection: close
+    x-powered-by: PHP/8.2.12
+    cache-control: no-cache, private
+    date: Sat, 14 Mar 2026 14:08:06 GMT
+    content-type: application/json
+    access-control-allow-origin: "*"
+  body:
+    type: json
+    content: '{"name":"station
+      safi","zone_geographique":"safi","status":"available","connector_type":"C2C","puissance_kw":"13.00","updated_at":"2026-03-14T14:08:06.000000Z","created_at":"2026-03-14T14:08:06.000000Z","id":3}'
+order: 1773497288681

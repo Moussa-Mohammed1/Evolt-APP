@@ -1,0 +1,29 @@
+$kind: http-request
+name: Create
+description: |-
+  Creates (records) a charging session for an existing reservation.
+
+  **Endpoint**
+  - Method: `POST`
+  - URL: `http://127.0.0.1:8000/api/charge`
+
+  **Request body (JSON)**
+  - `reservation_id` (number): ID of the reservation to attach this charging session to.
+  - `ttl_energy_delivered` (number): Total energy delivered during the session (e.g., kWh).
+
+  Use this request when you want to submit the charging result/measurement for a reservation.
+url: http://127.0.0.1:8000/api/charge
+method: POST
+headers:
+  Accept: application/json
+  Authorization: bearer 15|pKPTbGRox416PFG89RabjdRI6Lo3Nf5JKwDsWQd3967e7b84
+body:
+  type: json
+  content: "{\r
+
+    \    \"reservation_id\" : 2,\r
+
+    \    \"ttl_energy_delivered\" : 23.4\r
+
+    }"
+order: 1000

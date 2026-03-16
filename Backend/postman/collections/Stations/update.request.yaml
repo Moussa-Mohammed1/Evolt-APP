@@ -1,12 +1,9 @@
 $kind: http-request
-name: update
 url: http://127.0.0.1:8000/api/stations/1
 method: PATCH
 headers:
-  - key: Authorization
-    value: bearer 16|4GkRMkoDK3eff6BmK8DP6wyRl5K5w0xdLnrBGuqi092e67ea
-  - key: Accept
-    value: application/json
+  Authorization: bearer 21|r9v5dwMwkwfCwBZcSZJ896B7KegUHwMnbqHChW6Y16cc2d8d
+  Accept: application/json
 body:
   type: json
   content: "{\r
@@ -14,4 +11,5 @@ body:
     \    \"name\" : \"Station Rabat\"\r
 
     }"
+examples: .resources/update.resources/examples
 order: 3081767672087474

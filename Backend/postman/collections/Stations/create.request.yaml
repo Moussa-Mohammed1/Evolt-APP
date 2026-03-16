@@ -7,4 +7,5 @@ headers:
 body:
   type: json
   content: ""
+examples: .resources/create.resources/examples
 order: 3000

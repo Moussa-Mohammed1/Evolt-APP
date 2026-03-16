@@ -1,0 +1,9 @@
+$kind: collection
+name: ChargingSession
+description: Creates a new charging session by sending the reservation
+  identifier along with the total energy delivered to the backend. This POST
+  request calls `http://127.0.0.1:8000/api/charge` with a JSON payload
+  containing `reservation_id` (the reservation to charge against)
+  and `ttl_energy_delivered` (the amount of energy delivered for the session),
+  allowing the API to record/initialize the charging activity for that
+  reservation.

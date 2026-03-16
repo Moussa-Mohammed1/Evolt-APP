@@ -4,4 +4,5 @@ method: GET
 headers:
   Accept: application/json
   Authorization: bearer 14|NXV4MzTfK2X9wcwpmuhB0Zj8Bx3s7uHOkh7mLTFe5d02074b
+examples: .resources/getStation.resources/examples
 order: 2000

@@ -128,15 +128,85 @@ class ChargingSessionTest extends TestCase
             'puissance_kw' => 23.44,
         ]);
 
+        $ownerCurrentLatestReservation = Reservation::create([
+            'start_time' => now()->setTime(20, 0),
+            'end_time' => now()->setTime(21, 0),
+            'status' => 'accepted',
+            'user_id' => $owner->id,
+            'station_id' => $station->id,
+        ]);
+
+        $ownerCurrentOlderReservation = Reservation::create([
+            'start_time' => now()->setTime(8, 0),
+            'end_time' => now()->setTime(9, 0),
+            'status' => 'accepted',
+            'user_id' => $owner->id,
+            'station_id' => $station->id,
+        ]);
+
+        $ownerPastRecentReservation = Reservation::create([
+            'start_time' => now()->subDay()->setTime(18, 0),
+            'end_time' => now()->subDay()->setTime(19, 0),
+            'status' => 'accepted',
+            'user_id' => $owner->id,
+            'station_id' => $station->id,
+        ]);
+
+        $ownerPastOlderReservation = Reservation::create([
+            'start_time' => now()->subDays(4)->setTime(13, 0),
+            'end_time' => now()->subDays(4)->setTime(14, 0),
+            'status' => 'accepted',
+            'user_id' => $owner->id,
+            'station_id' => $station->id,
+        ]);
+
+        $ownerFutureReservation = Reservation::create([
+            'start_time' => now()->addDay()->setTime(10, 0),
+            'end_time' => now()->addDay()->setTime(11, 0),
+            'status' => 'accepted',
+            'user_id' => $owner->id,
+            'station_id' => $station->id,
+        ]);
+
         $otherReservation = Reservation::create([
-            'start_time' => now()->addDays(3)->setTime(10, 0),
-            'end_time' => now()->addDays(3)->setTime(11, 0),
+            'start_time' => now()->setTime(15, 0),
+            'end_time' => now()->setTime(16, 0),
             'status' => 'accepted',
             'user_id' => $otherUser->id,
             'station_id' => $station->id,
         ]);
 
-        ChargingSession::create([
+        $ownerCurrentLatestSession = ChargingSession::create([
+            'reservation_id' => $ownerCurrentLatestReservation->id,
+            'ttl_energy_delivered' => 45,
+            'status' => 'completed',
+        ]);
+
+        $ownerCurrentOlderSession = ChargingSession::create([
+            'reservation_id' => $ownerCurrentOlderReservation->id,
+            'ttl_energy_delivered' => 20,
+            'status' => 'completed',
+        ]);
+
+        $ownerPastRecentSession = ChargingSession::create([
+            'reservation_id' => $ownerPastRecentReservation->id,
+            'ttl_energy_delivered' => 28,
+            'status' => 'completed',
+        ]);
+
+        $ownerPastOlderSession = ChargingSession::create([
+            'reservation_id' => $ownerPastOlderReservation->id,
+            'ttl_energy_delivered' => 18,
+            'status' => 'completed',
+        ]);
+
+        $ownerFutureSession = ChargingSession::create([
+            'reservation_id' => $ownerFutureReservation->id,
+            'ttl_energy_delivered' => 36,
+            'status' => 'completed',
+        ]);
+
+        $otherUserSession = ChargingSession::create([
             'reservation_id' => $otherReservation->id,
             'ttl_energy_delivered' => 30,
             'status' => 'completed',

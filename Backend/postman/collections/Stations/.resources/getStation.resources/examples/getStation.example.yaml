@@ -1,0 +1,23 @@
+$kind: http-example
+request:
+  url: http://127.0.0.1:8000/api/stations/1
+  method: GET
+  headers:
+    Accept: application/json
+    Authorization: bearer 14|NXV4MzTfK2X9wcwpmuhB0Zj8Bx3s7uHOkh7mLTFe5d02074b
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    host: 127.0.0.1:8000
+    connection: close
+    x-powered-by: PHP/8.2.12
+    cache-control: no-cache, private
+    date: Sat, 14 Mar 2026 14:06:56 GMT
+    content-type: application/json
+    access-control-allow-origin: "*"
+  body:
+    type: json
+    content: '{"id":1,"name":"station
+      keniii","zone_geographique":"safi","status":"available","connector_type":"C2C","puissance_kw":"12.00","created_at":"2026-03-11T10:14:55.000000Z","updated_at":"2026-03-12T11:57:40.000000Z","reservations_count":3}'
+order: 1773497218221
