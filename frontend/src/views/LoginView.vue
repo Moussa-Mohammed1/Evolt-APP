@@ -1,49 +1,63 @@
 <script setup>
 import { ref } from "vue";
+import api from "../services/api";
+import router from "../router";
 
 const email = ref("");
 const password = ref("");
 const message = ref("");
+const loading = ref(false);
 
-function submitLogin() {
+async function submitLogin() {
+  loading.value = true;
   if (!email.value || !password.value) {
     message.value = "Veuillez remplir email et mot de passe.";
     return;
   }
-
-  message.value = "Connexion envoyee (demo).";
+  try {
+    const res = await api.post("/login", {
+      email: email.value,
+      password: password.value,
+    });
+    message.value = res.data?.message || "nothing new";
+    await router.replace("/stations");
+  } catch (error) {
+    message.value = error.response?.data?.message || "Connexion failed! Try again later";
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
 <template>
-  <main class="page">
-    <section class="card">
-      <h1>Connexion</h1>
+  <div class="min-h-screen flex items-center justify-center bg-black w-full">
+    <div class="bg-white shadow-lg p-8 w-96">
+      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+      <form class="space-y-4" @submit.prevent="submitLogin">
+        <input
+          v-model="email"
+          type="email"
+          placeholder="Email"
+          class="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-      <form class="form" @submit.prevent="submitLogin">
-        <label>
-          Email
-          <input v-model="email" type="email" placeholder="vous@email.com" />
-        </label>
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password"
+          class="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
-        <label>
-          Mot de passe
-          <input v-model="password" type="password" placeholder="********" />
-        </label>
-
-        <button type="submit">Se connecter</button>
+        <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          {{ loading ? "loading..." : "login" }}
+        </button>
+        <p v-if="message" class="success">
+          {{ message }}
+        </p>
       </form>
-
-      <p v-if="message" class="message">{{ message }}</p>
-
-      <p class="links">
-        <RouterLink to="/">Accueil</RouterLink>
-        <RouterLink to="/register">Inscription</RouterLink>
-      </p>
-    </section>
-  </main>
+    </div>
+  </div>
 </template>
-
 <style scoped>
 .page {
   min-height: 100vh;
