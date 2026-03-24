@@ -1,24 +1,44 @@
 <script setup>
 import { ref } from 'vue';
+import api from '../api/axios';
+import router from '../router';
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const message = ref('');
+const message = ref([]);
+const loading = ref(false);
 
-function submitRegister() {
-	if (!name.value || !email.value || !password.value || !confirmPassword.value) {
-		message.value = 'Veuillez remplir tous les champs.';
-		return;
+async function submitRegister() {
+	message.value = [];
+	loading.value = true;
+	try {
+		const res = await api.post('/register', {
+			name: name.value,
+			email: email.value,
+			password: password.value,
+			confirmPassword: confirmPassword.value
+		});
+		message.value = [res.data?.message || 'registered'];
+		await router.push('/stations');
+
+	} catch (error) {
+		const validationErrors = error.response?.data?.errors;
+		if (validationErrors && typeof validationErrors === 'object') {
+			message.value = Object.values(validationErrors)
+				.flat()
+				.filter((item) => typeof item === 'string' && item.length > 0);
+		} else if (Array.isArray(error.response?.data?.message)) {
+			message.value = error.response.data.message;
+		} else if (typeof error.response?.data?.message === 'string') {
+			message.value = [error.response.data.message];
+		} else {
+			message.value = ['Try again'];
+		}
+	} finally {
+		loading.value = false
 	}
-
-	if (password.value !== confirmPassword.value) {
-		message.value = 'Les mots de passe ne correspondent pas.';
-		return;
-	}
-
-	message.value = 'Inscription envoyee (demo).';
 }
 </script>
 
@@ -26,6 +46,11 @@ function submitRegister() {
 	<main class="page">
 		<section class="card">
 			<h1>Inscription</h1>
+			<div>
+				<ul v-if="message.length" class="message-list">
+					<li v-for="(m, index) in message" :key="index">{{ m }}</li>
+				</ul>
+			</div>
 
 			<form class="form" @submit.prevent="submitRegister">
 				<label>
@@ -45,18 +70,11 @@ function submitRegister() {
 
 				<label>
 					Confirmer le mot de passe
-					<input
-						v-model="confirmPassword"
-						type="password"
-						placeholder="********"
-					/>
+					<input v-model="confirmPassword" type="password" placeholder="********" />
 				</label>
 
-				<button type="submit">Creer le compte</button>
+				<button type="submit">{{ loading ? 'Creating account ...' : 'Creer le compte' }}</button>
 			</form>
-
-			<p v-if="message" class="message">{{ message }}</p>
-
 			<p class="links">
 				<RouterLink to="/">Accueil</RouterLink>
 				<RouterLink to="/login">Connexion</RouterLink>
@@ -116,6 +134,12 @@ button {
 .message {
 	margin-top: 12px;
 	color: #116946;
+}
+
+.message-list {
+	margin: 12px 0 0;
+	padding-left: 18px;
+	color: #b42318;
 }
 
 .links {
