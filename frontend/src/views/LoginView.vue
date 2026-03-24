@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import api from "../services/api";
+import api from "../api/axios";
 import router from "../router";
 
 const email = ref("");
@@ -20,6 +20,11 @@ async function submitLogin() {
       password: password.value,
     });
     message.value = res.data?.message || "nothing new";
+    const token = res.data?.token;
+    const user = res.data?.user;
+
+    localStorage.setItem('token', token || "");
+    localStorage.setItem('user', JSON.stringify(user ?? null))
     await router.replace("/stations");
   } catch (error) {
     message.value = error.response?.data?.message || "Connexion failed! Try again later";
@@ -30,30 +35,42 @@ async function submitLogin() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-black w-full">
-    <div class="bg-white shadow-lg p-8 w-96">
-      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-      <form class="space-y-4" @submit.prevent="submitLogin">
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          class="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          class="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-          {{ loading ? "loading..." : "login" }}
-        </button>
-        <p v-if="message" class="success">
-          {{ message }}
-        </p>
+  <div class="min-h-screen flex items-center justify-center w-full bg-slate-300">
+    <div class="bg-white shadow-lg p-8 w-96 rounded-sm">
+      <h2 class="text-2xl font-bold mb-6 text-left text-black">Login</h2>
+      <div class="h-0.5 my-1 bg-black w-full"></div>
+      <form class="max-w-sm mx-auto space-y-4" @submit.prevent="submitLogin">
+        <div>
+          <label for="visitors" class="text-left mb-2.5 text-sm font-medium text-black"
+            >Email</label
+          >
+          <input
+            type="text"
+            v-model="email"
+            id="visitors"
+            class="bg-neutral-secondary-medium text-black border border-default-medium text-heading text-sm rounded-base focus:ring-2 focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
+            placeholder=""
+            required
+          />
+        </div>
+        <div>
+          <label for="visitors" class="my-6 text-left text-sm font-medium text-black"
+            >Password</label
+          >
+          <input
+            v-model="password"
+            type="text"
+            id="visitors"
+            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+            placeholder=""
+            required
+          />
+        </div>
+        <button
+          class="bg-slate-400 rounded-sm text-black py-1.5 px-3 font-semibold"
+          type="submit"
+          >{{ loading ? 'loading' : 'login' }}</button>
+        <p>{{ message }}</p>
       </form>
     </div>
   </div>
@@ -96,15 +113,7 @@ input {
   border-radius: 8px;
 }
 
-button {
-  margin-top: 4px;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #2f6be2;
-  color: #ffffff;
-  cursor: pointer;
-}
+
 
 .message {
   margin-top: 12px;
