@@ -4,8 +4,9 @@ import { getUsers } from '../services/userService';
 
 const users = ref([]);
 const error = ref('');
-
+const loading = ref(false)
 onMounted(async () => {
+    loading.value =  true;
   try {
     const res = await getUsers();
     users.value = res?.data?.users ?? res?.data ?? [];
@@ -13,11 +14,14 @@ onMounted(async () => {
     error.value =
       err?.response?.data?.message ||
       'Error happened while trying to get users! Try again later.';
+  }finally{
+    loading.value = false
   }
 });
 </script>
 <template>
   <div>
+    <p> {{ loading ? 'loading users' : '' }}</p>
     <p v-if="error">{{ error }}</p>
     <table v-if="users.length">
       <thead>
@@ -33,7 +37,5 @@ onMounted(async () => {
         </tr>
       </tbody>
     </table>
-
-    <p v-else>No users found.</p>
   </div>
 </template>
